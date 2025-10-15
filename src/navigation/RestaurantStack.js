@@ -8,7 +8,7 @@ const Stack = createNativeStackNavigator();
 
 export function RestaurantStack(){
     return(
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen 
         name={screen.restaurant.restautants} 
         component={RestaurantsScreen} 
