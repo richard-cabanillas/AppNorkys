@@ -3,6 +3,7 @@ import{AccountScreen} from  "../Screens/Account/AccountScreen";
 import{screen} from "../utils";
 import{LoginScreen} from "../Screens/Account/LoginScreen/LoginScreen";
 import{ResgisterScreen} from "../Screens/Account/RegisterScreen/ResgisterScreen";
+import{ForgotPassword} from "../Screens/Account/ForgotPassword/ForgotPassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,9 @@ export function AccountStack(){
             
             <Stack.Screen name={screen.account.register} component={ResgisterScreen} 
             options={{title:"Crea tu cuenta"}}/>
+            
+            <Stack.Screen name={screen.account.forgotPassword} component={ForgotPassword} 
+            options={{title:"Recuperar contraseña"}}/>
 
 
         </Stack.Navigator>

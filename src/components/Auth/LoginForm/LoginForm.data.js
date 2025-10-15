@@ -14,3 +14,6 @@ export function validationSchema(){
     })
 }
 
+export function validateCount(email, password){
+
+}

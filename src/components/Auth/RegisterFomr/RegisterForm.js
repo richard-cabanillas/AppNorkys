@@ -35,12 +35,13 @@ export  function RegisterForm() {
 
           navigation.navigate(screen.account.List);
       } catch (error) {
+        console.error("Error al registrar:", error); // Verás el mensaje en la consola
         Toast.show({
-          type:"error",
-          position:"bottom",
-          text1:"Error al registrarse, intentelo mas tarde",
-
-        })
+          type: "error",
+          position: "bottom",
+          text1: "Error al registrarse",
+          text2: error.message, // Muestra el mensaje de Firebase
+        });
       }
       
     },

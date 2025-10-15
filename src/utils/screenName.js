@@ -11,7 +11,8 @@ const AccountStack ={
     tab: "AccountTab",
     List: "ListAccount",
     login: "Login",
-    register:"Register"
+    register:"Register",
+    forgotPassword: "ForgotPassword",
 };
 const MenuListStack= {
     tab: "MenuListTab",
