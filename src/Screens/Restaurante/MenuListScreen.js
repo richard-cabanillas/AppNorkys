@@ -16,32 +16,32 @@ export function MenuListScreen() {
         price: 45.90,
         oldPrice: 52.00,
         tag: 'Popular',
-        image: 'https://www.recetasnestle.com.pe/sites/default/files/2022-07/pollo-a-la-brasa.jpg',
-        link: 'https://es.wikipedia.org/wiki/Pollo_a_la_brasa'
+        image: 'https://losmaderos.pe/public/img/products/prd_wc61187987efbb2.jpg',
+        
       },
       {
         id: '2',
         name: 'Medio Pollo a la Brasa',
         desc: 'Ideal para compartir, incluye papas fritas y ensalada.',
         price: 25.90,
-        image: 'https://comidasperuanas.net/wp-content/uploads/2021/05/medio-pollo-a-la-brasa.jpg',
-        link: 'https://es.wikipedia.org/wiki/Pollo_a_la_brasa'
+        image: 'https://s3-rokys-pro.s3.amazonaws.com/media/catalog/product/m/e/medio-pollo-melona_2.jpg',
+        
       },
       {
         id: '3',
         name: '1/4 de Pollo a la Brasa',
         desc: 'Porción individual con papas fritas y cremas.',
         price: 15.90,
-        image: 'https://cdn0.recetasgratis.net/es/posts/0/3/9/pollo_a_la_brasa_peruano_25930_600.jpg',
-        link: 'https://es.wikipedia.org/wiki/Pollo_a_la_brasa'
+        image: 'https://www.magacin247.com/wp-content/uploads/2023/05/Rokys-lanza-promocion-de-%C2%BC-de-pollo-a-10-soles-768x414.jpg',
+        
       },
       {
         id: '8',
         name: 'Broaster con papas',
         desc: 'Crujiente pollo broaster con papas doradas.',
         price: 17.90,
-        image: 'https://www.comedera.com/wp-content/uploads/2022/08/Pollo-broaster.jpg',
-        link: 'https://es.wikipedia.org/wiki/Pollo_frito'
+        image: 'https://tse2.mm.bing.net/th/id/OIP.uaKi9A-ozdKn_wSgd139hwHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
+      
       }
     ],
     Acompañamientos: [
@@ -50,25 +50,25 @@ export function MenuListScreen() {
         name: 'Papas Fritas Grandes',
         desc: 'Crocantes, doradas y con toque de sal.',
         price: 9.90,
-        image: 'https://www.paulinacocina.net/wp-content/uploads/2022/03/papas-fritas-receta.jpg',
-        link: 'https://es.wikipedia.org/wiki/Papas_fritas'
+        image: 'https://tse1.mm.bing.net/th/id/OIP.2N6uuqhOICCys-_b35A4awHaE8?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
+        
       },
       {
         id: '5',
         name: 'Arroz Chaufa',
         desc: 'Arroz chaufa clásico con verduras y soya.',
         price: 11.50,
-        image: 'https://www.comedera.com/wp-content/uploads/2023/01/Arroz-chaufa-peruano-shutterstock_2180133381.jpg',
-        link: 'https://es.wikipedia.org/wiki/Arroz_chaufa'
+        image: 'https://tse1.mm.bing.net/th/id/OIP.77K3XXRSierEJpt_B7Uw4QHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3  ',
+        
       },
       {
         id: '9',
         name: 'Ensalada Criolla',
         desc: 'Cebolla, tomate y limón. Refrescante.',
         price: 6.90,
-        image: 'https://www.comedera.com/wp-content/uploads/2022/09/ensalada-criolla-peruana.jpg',
-        link: 'https://es.wikipedia.org/wiki/Ensalada_criolla'
-      },
+        image: 'https://tse2.mm.bing.net/th/id/OIP.7znkvzDN06TW0mohhLNMDAHaE8?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
+        
+      },  
     ],
     Bebidas: [
       {
@@ -76,24 +76,24 @@ export function MenuListScreen() {
         name: 'Inca Kola 1L',
         desc: 'Gaseosa peruana original 1 litro.',
         price: 6.50,
-        image: 'https://wongfood.vteximg.com.br/arquivos/ids/573290-1000-1000/184029.jpg',
-        link: 'https://es.wikipedia.org/wiki/Inca_Kola'
+        image: 'https://d2o812a6k13pkp.cloudfront.net/fit-in/1080x1080/Productos/40527007_0120230815110625.jpg',
+        
       },
       {
         id: '7',
         name: 'Coca-Cola 1L',
         desc: 'Refresco clásico 1 litro.',
         price: 6.50,
-        image: 'https://images.ctfassets.net/ywowj8d94i8y/5r4UJjSqt0sWCyScGggWgM/79854dbe33b93281891b6f51c55d0794/botella-coca-cola-original-1lt.jpg',
-        link: 'https://es.wikipedia.org/wiki/Coca-Cola'
+        image: 'https://tse3.mm.bing.net/th/id/OIP.kCfWMQS1RPtapVUqaGeHlgHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
+        
       },
       {
         id: '10',
         name: 'Chicha Morada',
         desc: 'Bebida tradicional peruana natural.',
         price: 5.90,
-        image: 'https://www.comedera.com/wp-content/uploads/2022/11/Chicha-morada-peruana-shutterstock_2156790367.jpg',
-        link: 'https://es.wikipedia.org/wiki/Chicha_morada'
+        image: 'https://tse4.mm.bing.net/th/id/OIP.oeaa9ymJLuUFQ6ZirI2zZQHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
+        
       },
     ],
   };
@@ -139,7 +139,7 @@ export function MenuListScreen() {
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
-            onPress={() => Linking.openURL(item.link)}
+            
           >
             <Image source={{ uri: item.image }} style={styles.image} />
             <View style={{ flex: 1 }}>

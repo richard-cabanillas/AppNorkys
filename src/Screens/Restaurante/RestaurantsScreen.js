@@ -19,7 +19,7 @@ export function RestaurantsScreen(props) {
       price: 'S/ 45.90',
       tag: 'Popular',
       image:
-        'https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=600&q=60',
+        'https://losmaderos.pe/public/img/products/prd_wc61187987efbb2.jpg',
     },
     {
       id: '2',

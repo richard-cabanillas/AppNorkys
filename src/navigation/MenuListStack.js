@@ -5,7 +5,7 @@ const Stack = createNativeStackNavigator();
 
 export function MenuListStack() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen
         name="MenuList" // Usamos string literal para evitar problemas con screen.menulist.List
         component={MenuListScreen}
