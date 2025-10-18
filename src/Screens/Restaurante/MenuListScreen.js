@@ -42,7 +42,15 @@ export function MenuListScreen() {
         price: 17.90,
         image: 'https://tse2.mm.bing.net/th/id/OIP.uaKi9A-ozdKn_wSgd139hwHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
       
-      }
+      },
+      {
+        id: '12',
+        name: 'Alitas Rockys (6 piezas)',
+        desc: 'Alitas de pollo con salsa especial Rockys y papas.',
+        price: 19.90,
+        image: 'https://img0.didiglobal.com/static/soda_public/img_bd72986412e9d3968cd165425e693dda.jpg',
+      
+      }  
     ],
     Acompañamientos: [
       {
