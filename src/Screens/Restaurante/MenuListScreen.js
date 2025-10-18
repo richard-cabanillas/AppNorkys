@@ -63,10 +63,10 @@ export function MenuListScreen() {
       },
       {
         id: '9',
-        name: 'Ensalada Criolla',
-        desc: 'Cebolla, tomate y limón. Refrescante.',
-        price: 6.90,
-        image: 'https://tse2.mm.bing.net/th/id/OIP.7znkvzDN06TW0mohhLNMDAHaE8?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
+        name: 'Ensalada Fresca',
+        desc: 'Lechuga, tomate, zanahoria y palta.',
+        price: 10,
+        image: 'https://lafamiliachickengrill.com/wp-content/uploads/2024/06/Ensalada-clasica-1-1024x768.jpg',
         
       },  
     ],
@@ -95,6 +95,11 @@ export function MenuListScreen() {
         image: 'https://tse4.mm.bing.net/th/id/OIP.oeaa9ymJLuUFQ6ZirI2zZQHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
         
       },
+        id: '11',
+        name: 'Maracuyá',
+        desc: 'Refrescante bebida natural de maracuyá.',
+        price: 5.90,
+        image: 'https://cebicheriamaria.com/web/wp-content/uploads/2022/03/media-jarra.jpg',
     ],
   };
 
