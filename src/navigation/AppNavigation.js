@@ -30,7 +30,7 @@ export function AppNavigation() {
         options={{ title: "Menú" }}
       />
       <Tab.Screen
-        name="Pedidos"
+        name={screen.pedidos.tab}
         component={PedidosStack}
         options={{ title: "Pedidos" }}
       />
