@@ -34,6 +34,11 @@ export function AppNavigation(){
             component={MenuListStack} 
             options={{title:"Menu"}}
             />
+            <Tab.Screen
+             name={screen.orders.tab}
+             component={PedidossStack}
+             options={{ title: "Pedidos" }}
+            />
             <Tab.Screen 
             name={screen.favorites.tab} 
             component={FavoriteStack} 
