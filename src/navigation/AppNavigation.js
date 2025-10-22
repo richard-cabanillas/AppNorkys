@@ -4,7 +4,6 @@ import { RestaurantStack } from "./RestaurantStack";
 import { FavoriteStack } from "./FavoriteStack";
 import { AccountStack } from "./AccountStack";
 import { MenuListStack } from "./MenuListStack";
-import { PedidosStack } from "./PedidosStack";
 import { screen } from "../utils";
 
 const Tab = createBottomTabNavigator();
@@ -32,12 +31,6 @@ export function AppNavigation() {
       />
 
       <Tab.Screen
-        name={screen.pedidos.tab} 
-        component={PedidosStack}
-        options={{ title: "Pedidos" }}
-      />
-
-      <Tab.Screen
         name={screen.favorites.tab}
         component={FavoriteStack}
         options={{ title: "Favoritos" }}
@@ -59,8 +52,6 @@ function getIcon(route, color, size) {
     iconName = "home-outline";
   } else if (route.name === screen.menulist.tab) {
     iconName = "list-outline";
-  } else if (route.name === screen.pedidos.tab) {
-    iconName = "receipt-outline";
   } else if (route.name === screen.favorites.tab) {
     iconName = "heart-outline";
   } else if (route.name === screen.account.tab) {

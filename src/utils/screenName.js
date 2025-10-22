@@ -22,15 +22,10 @@ const MenuListStack = {
   list: "MenuTab",
 };
 
-const PedidosStack = {
-  tab: "PedidosTab",
-  list: "PedidosScreen",
-};
 
 export const screen = {
   restaurant: RestaurantStack,
   favorites: FavoriteStack,
   account: AccountStack,
   menulist: MenuListStack,
-  pedidos: PedidosStack,
 };
