@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { PedidosScreen } from "../Screens/PedidosScreen";
+import { PedidosScreen } from "../Screens/Pedidos/PedidosScreen";
+
 
 const Stack = createNativeStackNavigator();
 
