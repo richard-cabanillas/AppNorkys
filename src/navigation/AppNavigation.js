@@ -24,22 +24,25 @@ export function AppNavigation() {
         component={RestaurantStack}
         options={{ title: "Inicio" }}
       />
+
       <Tab.Screen
         name={screen.menulist.tab}
         component={MenuListStack}
         options={{ title: "Menú" }}
       />
-      <Tab.Screen
 
-        name={screen.pedidosScreen.tab}
+      <Tab.Screen
+        name={screen.pedidos.tab} 
         component={PedidosStack}
         options={{ title: "Pedidos" }}
       />
+
       <Tab.Screen
         name={screen.favorites.tab}
         component={FavoriteStack}
         options={{ title: "Favoritos" }}
       />
+
       <Tab.Screen
         name={screen.account.tab}
         component={AccountStack}
@@ -56,7 +59,7 @@ function getIcon(route, color, size) {
     iconName = "home-outline";
   } else if (route.name === screen.menulist.tab) {
     iconName = "list-outline";
-  } else if (route.name === "Pedidos") {
+  } else if (route.name === screen.pedidos.tab) {
     iconName = "receipt-outline";
   } else if (route.name === screen.favorites.tab) {
     iconName = "heart-outline";
