@@ -8,7 +8,7 @@ export function FavoriteStack(){
     return(    
     <Stack.Navigator>
         <Stack.Screen  
-        name={screen.favorites.List}
+        name={screen.favorites.list}
         component={FavoriteScreen}
         options={{title:"Lista de los mejores platos"}}
         />
