@@ -5,6 +5,7 @@ import{LoginScreen} from "../Screens/Account/LoginScreen/LoginScreen";
 import{RegisterScreen} from "../Screens/Account/RegisterScreen/RegisterScreen";
 import{ForgotPassword} from "../Screens/Account/ForgotPassword/ForgotPassword";
 
+
 const Stack = createNativeStackNavigator();
 
 export function AccountStack(){

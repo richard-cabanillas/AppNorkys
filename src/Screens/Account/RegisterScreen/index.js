@@ -1,1 +1,1 @@
-export * from "./ResgisterScreen";
+export * from "./RegisterScreen";

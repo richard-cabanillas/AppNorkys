@@ -30,16 +30,24 @@ export function LoginForm() {
                     formValue.password
                 );
 
-                navigation.navigate(screen.account.List)
+                navigation.navigate(screen.account.list)
 
             } catch (error) {
                 // Imprimir el error en consola para debugging (opcional)
                 console.error("Login Error:", error);
 
+                // Mensajes más específicos según el código de error de Firebase
+                const code = error.code;
+                let message = "Usuario o contraseña incorrectos";
+                if (code === 'auth/wrong-password') message = 'Contraseña incorrecta';
+                else if (code === 'auth/user-not-found') message = 'Usuario no encontrado';
+                else if (code === 'auth/invalid-email') message = 'Correo inválido';
+
                 Toast.show({
-                    type:"error",
-                    position:"bottom",
-                    text1:"Usuario o contraseña incorrectos"
+                    type: "error",
+                    position: "bottom",
+                    text1: message,
+                    text2: code,
                 })
             }
         },

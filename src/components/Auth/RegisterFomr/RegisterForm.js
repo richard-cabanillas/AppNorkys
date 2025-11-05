@@ -33,14 +33,22 @@ export  function RegisterForm() {
             formValue.password
           );
 
-          navigation.navigate(screen.account.List);
+          navigation.navigate(screen.account.list);
       } catch (error) {
         console.error("Error al registrar:", error); // Verás el mensaje en la consola
+        
+        // Mensajes más legibles según código de error de Firebase
+        const code = error.code;
+        let message = 'Error al registrarse';
+        if (code === 'auth/email-already-in-use') message = 'El correo ya está en uso';
+        else if (code === 'auth/invalid-email') message = 'Correo inválido';
+        else if (code === 'auth/weak-password') message = 'Contraseña muy débil';
+
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: "Error al registrarse",
-          text2: error.message, // Muestra el mensaje de Firebase
+          text1: message,
+          text2: code,
         });
       }
       
