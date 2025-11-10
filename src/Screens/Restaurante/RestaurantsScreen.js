@@ -1,11 +1,83 @@
-import React from 'react';
-import { View, Text,Button } from 'react-native'
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, Button, Dimensions, Alert } from 'react-native'
 import{screen} from "../../utils"
 import {ScrollView, StyleSheet, Image, TouchableOpacity, FlatList, } from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
+import MapView, { Marker } from 'react-native-maps';
+import * as Location from 'expo-location';
 
 export function RestaurantsScreen(props) {
   const {navigation} = props;
+
+  const mapRef = useRef(null);
+  const [userLocation, setUserLocation] = useState(null);
+
+  // Coordenadas de ejemplo para Rocky's
+  const rockysLocations = [
+    { id: 'r1', title: "Rocky'1 - Restaurante pollería Roky's - Surco", latitude: -12.165131761160946, longitude: -76.99236169680736 },
+    { id: 'r2', title: "Rocky'2 - Villa el salvador", latitude: -12.207610904975786, longitude: -76.93826516262396 },
+    { id: 'r3', title: "Rocky'3 - Polleria Norkys Villa El Salvador", latitude: -12.19734514196775, longitude: -76.96473953828236 },
+    { id: 'r4', title: "Rocky'4 - Roky's Plaza Center", latitude: -12.202317413258992, longitude: -76.93306072334313 },
+    { id: 'r5', title: "Rocky'5 - Villa el salvador", latitude: -12.209683624358021, longitude: -76.93903788370224 },
+  ];
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Permiso denegado', 'Necesitamos permiso de ubicación para mostrar restaurantes cercanos');
+          return;
+        }
+
+        const loc = await Location.getCurrentPositionAsync({});
+        setUserLocation({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
+      } catch (e) {
+        console.warn('Error pidiendo ubicación:', e);
+      }
+    })();
+  }, []);
+
+  // Calcula la ubicación más cercana (distancia aproximada usando Haversine)
+  const toRad = (value) => (value * Math.PI) / 180;
+  const haversineDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371e3; // metros
+    const φ1 = toRad(lat1);
+    const φ2 = toRad(lat2);
+    const Δφ = toRad(lat2 - lat1);
+    const Δλ = toRad(lon2 - lon1);
+    const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  const findNearestRocky = () => {
+    if (!userLocation) return null;
+    let nearest = null;
+    let minDist = Infinity;
+    for (const r of rockysLocations) {
+      const d = haversineDistance(userLocation.latitude, userLocation.longitude, r.latitude, r.longitude);
+      if (d < minDist) {
+        minDist = d;
+        nearest = r;
+      }
+    }
+    return nearest;
+  };
+
+  const centerMapOnNearest = () => {
+    const nearest = findNearestRocky();
+    if (!nearest) {
+      Alert.alert('Ubicación no disponible', 'No se pudo determinar tu ubicación.');
+      return;
+    }
+    mapRef.current?.animateToRegion({
+      latitude: nearest.latitude,
+      longitude: nearest.longitude,
+      latitudeDelta: 0.01,
+      longitudeDelta: 0.01,
+    }, 800);
+  };
 
   const goToMenu = () => {
   navigation.navigate(screen.menulist.tab); 
@@ -104,6 +176,43 @@ export function RestaurantsScreen(props) {
           <Text style={styles.promoTitle}>20% OFF en tu primer pedido</Text>
           <Text style={styles.promoSubtitle}>Válido hasta el 31 de octubre</Text>
         </View>
+      </View>
+
+      {/* Ubícanos - minimapa con botón */}
+      <Text style={styles.sectionTitle}>Ubícanos</Text>
+      <View style={{paddingHorizontal: 16, marginBottom: 16}}>
+        <View style={{height: 350, borderRadius: 12, overflow: 'hidden', marginBottom: 8}}>
+          <MapView
+            ref={mapRef}
+            style={{flex: 1}}
+            initialRegion={{
+              latitude: userLocation ? userLocation.latitude : -12.178965,
+              longitude: userLocation ? userLocation.longitude : -76.9825745,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            }}
+            showsUserLocation={true}
+          >
+            {rockysLocations.map((loc) => (
+              <Marker
+                key={loc.id}
+                coordinate={{ latitude: loc.latitude, longitude: loc.longitude }}
+                title={loc.title}
+              />
+            ))}
+            {userLocation && (
+              <Marker
+                coordinate={userLocation}
+                title="Tu ubicación"
+                pinColor="blue"
+              />
+            )}
+          </MapView>
+        </View>
+
+        <TouchableOpacity style={styles.outlineButton} onPress={centerMapOnNearest}>
+          <Text style={styles.outlineButtonText}>Suc. más cercana</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={{height: 80}} />

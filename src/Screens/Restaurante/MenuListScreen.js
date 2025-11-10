@@ -99,7 +99,7 @@ export function MenuListScreen() {
         name: 'Maracuyá',
         desc: 'Refrescante bebida natural de maracuyá.',
         price: 5.90,
-        image: 'https://cebicheriamaria.com/web/wp-content/uploads/2022/03/media-jarra.jpg',
+        image: 'https://polleriaslagranja.com/wp-content/uploads/2022/10/La-Granja-Real-Food-Chicken-Jarra-de-Maracuya.png',
       },
     ],
   };
