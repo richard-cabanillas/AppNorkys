@@ -211,7 +211,7 @@ export function RestaurantsScreen(props) {
         </View>
 
         <TouchableOpacity style={styles.outlineButton} onPress={centerMapOnNearest}>
-          <Text style={styles.outlineButtonText}>Suc. más cercana</Text>
+          <Text style={styles.outlineButtonText}>Restaurante más cercano</Text>
         </TouchableOpacity>
       </View>
 
