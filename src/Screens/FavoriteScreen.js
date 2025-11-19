@@ -4,7 +4,7 @@ import React from 'react'
 export  function FavoriteScreen() {
   return (
     <View>
-      <Text>FavoriteScreen</Text>
+      <Text>FavoriteScreen Holi</Text>
     </View>
   )
 }

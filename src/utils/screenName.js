@@ -1,7 +1,9 @@
+
+
 const RestaurantStack = {
   tab: "RestaurantsTab",
   restaurants: "menus",
-  information: "Information",
+
 };
 
 const FavoriteStack = {
@@ -20,6 +22,7 @@ const AccountStack = {
 const MenuListStack = {
   tab: "MenuListTab",
   list: "MenuTab",
+  info:"MenuInfo"
 };
 
 

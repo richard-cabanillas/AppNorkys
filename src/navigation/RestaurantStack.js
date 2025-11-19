@@ -15,11 +15,7 @@ export function RestaurantStack(){
         options={{title:"restaurantes"}}
         />
 
-        <Stack.Screen 
-        name={screen.restaurant.information} 
-        component={InfoMenu} 
-        options={{title:"Informacion del menu"}}
-        />
+
 
     </Stack.Navigator>
     )

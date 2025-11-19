@@ -1,221 +1,159 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, TouchableOpacity, TextInput, Image, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { getDatabase, ref, onValue } from "firebase/database";
+import { styles } from './MenuListScreen.styles';
+import { screen } from "../../utils";
 
-export function MenuListScreen() {
-  const [category, setCategory] = useState('Pollos');
+export function MenuListScreen(props) {
+  const { navigation } = props;
   const [search, setSearch] = useState('');
+  const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todas');
 
-  // Menú con imágenes reales y enlaces
-  const menu = {
-    Pollos: [
-      {
-        id: '1',
-        name: 'Pollo a la Brasa Entero',
-        desc: 'Pollo entero a la brasa con papas, ensalada y cremas.',
-        price: 45.90,
-        oldPrice: 52.00,
-        tag: 'Popular',
-        image: 'https://losmaderos.pe/public/img/products/prd_wc61187987efbb2.jpg',
-      },
-      {
-        id: '2',
-        name: 'Medio Pollo a la Brasa',
-        desc: 'Ideal para compartir, incluye papas fritas y ensalada.',
-        price: 25.90,
-        image: 'https://s3-rokys-pro.s3.amazonaws.com/media/catalog/product/m/e/medio-pollo-melona_2.jpg',
-      },
-      {
-        id: '3',
-        name: '1/4 de Pollo a la Brasa',
-        desc: 'Porción individual con papas fritas y cremas.',
-        price: 15.90,
-        image: 'https://www.magacin247.com/wp-content/uploads/2023/05/Rokys-lanza-promocion-de-%C2%BC-de-pollo-a-10-soles-768x414.jpg',
-      },
-      {
-        id: '8',
-        name: 'Broaster con papas',
-        desc: 'Crujiente pollo broaster con papas doradas.',
-        price: 17.90,
-        image: 'https://tse2.mm.bing.net/th/id/OIP.uaKi9A-ozdKn_wSgd139hwHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
-      },
-      {
-        id: '12',
-        name: 'Alitas Rockys (6 piezas)',
-        desc: 'Alitas de pollo con salsa especial Rockys y papas.',
-        price: 19.90,
-        image: 'https://img0.didiglobal.com/static/soda_public/img_bd72986412e9d3968cd165425e693dda.jpg',
-      },
-    ],
+  // Estado del carrito (solo visual por ahora)
+  const [cartCount, setCartCount] = useState(0);
 
-    Acompañamientos: [
-      {
-        id: '4',
-        name: 'Papas Fritas Grandes',
-        desc: 'Crocantes, doradas y con toque de sal.',
-        price: 9.90,
-        image: 'https://tse1.mm.bing.net/th/id/OIP.2N6uuqhOICCys-_b35A4awHaE8?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
-      },
-      {
-        id: '5',
-        name: 'Arroz Chaufa',
-        desc: 'Arroz chaufa clásico con verduras y soya.',
-        price: 11.50,
-        image: 'https://tse1.mm.bing.net/th/id/OIP.77K3XXRSierEJpt_B7Uw4QHaEK?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
-      },
-      {
-        id: '9',
-        name: 'Ensalada Fresca',
-        desc: 'Lechuga, tomate, zanahoria y palta.',
-        price: 10.00,
-        image: 'https://lafamiliachickengrill.com/wp-content/uploads/2024/06/Ensalada-clasica-1-1024x768.jpg',
-      },
-    ],
+  useEffect(() => {
+    const db = getDatabase();
 
-    Bebidas: [
-      {
-        id: '6',
-        name: 'Inca Kola 1L',
-        desc: 'Gaseosa peruana original 1 litro.',
-        price: 6.50,
-        image: 'https://d2o812a6k13pkp.cloudfront.net/fit-in/1080x1080/Productos/40527007_0120230815110625.jpg',
-      },
-      {
-        id: '7',
-        name: 'Coca-Cola 1L',
-        desc: 'Refresco clásico 1 litro.',
-        price: 6.50,
-        image: 'https://tse3.mm.bing.net/th/id/OIP.kCfWMQS1RPtapVUqaGeHlgHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
-      },
-      {
-        id: '10',
-        name: 'Chicha Morada',
-        desc: 'Bebida tradicional peruana natural.',
-        price: 5.90,
-        image: 'https://tse4.mm.bing.net/th/id/OIP.oeaa9ymJLuUFQ6ZirI2zZQHaHa?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3',
-      },
-      {
-        id: '11',
-        name: 'Maracuyá',
-        desc: 'Refrescante bebida natural de maracuyá.',
-        price: 5.90,
-        image: 'https://polleriaslagranja.com/wp-content/uploads/2022/10/La-Granja-Real-Food-Chicken-Jarra-de-Maracuya.png',
-      },
-    ],
-  };
+    const categoriasRef = ref(db, 'Categorias');
+    onValue(categoriasRef, snapshot => {
+      const data = snapshot.val();
+      if (data) {
+        const lista = Object.keys(data).map(key => ({
+          id: String(key),
+          nombre: data[key].nombre || String(data[key].Nombre || data[key].title || key)
+        }));
+        setCategorias(lista);
+      } else setCategorias([]);
+    });
 
-  // Filtro de búsqueda
-  const filteredData = menu[category].filter(item =>
-    item.name.toLowerCase().includes(search.toLowerCase())
-  );
+    const productosRef = ref(db, 'Productos');
+    onValue(productosRef, snapshot => {
+      const data = snapshot.val();
+      if (data) {
+        const lista = Object.keys(data).map(key => {
+          const raw = data[key] || {};
+          const rawCat = raw.categoriaId ?? raw.categoriaID ?? raw.CategoriaId ?? raw.Categoria ?? raw.categoria ?? raw.cat ?? raw.categoryId ?? raw.category;
+          return {
+            id: String(key),
+            ...raw,
+            categoriaId: rawCat !== undefined ? String(rawCat) : undefined
+          };
+        });
+        setProductos(lista);
+      } else setProductos([]);
+    });
+  }, []);
+
+const goToInfoMenu = (producto) => {
+  navigation.navigate(screen.menulist.info, {
+    producto,
+    onAddToCart: (cantidad) => {
+      setCartCount(prev => prev + cantidad); // suma la cantidad seleccionada
+    },
+  });
+};
+
+
+  const filteredData = productos.filter(item => {
+    const titulo = (item?.Titulo || "").toLowerCase();
+    const desc = (item?.Descripcion || "").toLowerCase();
+    const query = (search || "").toLowerCase();
+
+    const matchSearch = titulo.includes(query) || desc.includes(query);
+
+    if (categoriaSeleccionada === 'todas') return matchSearch;
+
+    const itemCat = item?.categoriaId !== undefined ? String(item.categoriaId) : undefined;
+    return matchSearch && itemCat === String(categoriaSeleccionada);
+  });
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Menú Rocky’s</Text>
-        <TextInput
-          style={styles.search}
-          placeholder="Buscar platillos..."
-          value={search}
-          onChangeText={setSearch}
-        />
-      </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+      <View style={styles.container}>
 
-      {/* Tabs */}
-      <View style={styles.tabs}>
-        {Object.keys(menu).map(cat => (
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Menú</Text>
+          <TextInput
+            style={styles.search}
+            placeholder="Buscar platillos..."
+            value={search}
+            onChangeText={setSearch}
+          />
+        </View>
+
+        {/* Categorías */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.categoriesBar}
+          contentContainerStyle={styles.categoriesContent}
+        >
           <TouchableOpacity
-            key={cat}
-            style={[styles.tab, category === cat && styles.activeTab]}
-            onPress={() => setCategory(cat)}
+            style={[styles.categoryButton, categoriaSeleccionada === 'todas' && styles.categoryButtonActive]}
+            onPress={() => setCategoriaSeleccionada('todas')}
           >
-            <Text style={[styles.tabText, category === cat && styles.activeTabText]}>
-              {cat}
+            <Text style={[styles.categoryText, categoriaSeleccionada === 'todas' && styles.categoryTextActive]}>
+              Todas
             </Text>
           </TouchableOpacity>
-        ))}
-      </View>
 
-      {/* Lista */}
-      <FlatList
-        data={filteredData}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.list}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card}>
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <View style={{ flex: 1 }}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.desc}>{item.desc}</Text>
-              <View style={styles.priceRow}>
-                <Text style={styles.price}>S/ {item.price.toFixed(2)}</Text>
-                {item.oldPrice && (
-                  <Text style={styles.oldPrice}>S/ {item.oldPrice.toFixed(2)}</Text>
-                )}
-                {item.tag && <Text style={styles.tag}>{item.tag}</Text>}
-              </View>
-            </View>
-            <TouchableOpacity style={styles.addButton}>
-              <Ionicons name="add" size={22} color="#fff" />
+          {categorias.map(categoria => (
+            <TouchableOpacity
+              key={categoria.id}
+              style={[styles.categoryButton, categoriaSeleccionada === categoria.id && styles.categoryButtonActive]}
+              onPress={() => setCategoriaSeleccionada(categoria.id)}
+            >
+              <Text style={[styles.categoryText, categoriaSeleccionada === categoria.id && styles.categoryTextActive]}>
+                {categoria.nombre}
+              </Text>
             </TouchableOpacity>
-          </TouchableOpacity>
-        )}
-      />
+          ))}
+        </ScrollView>
+
+        {/* Productos filtrados */}
+        <FlatList
+          data={filteredData}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.list}
+          ListEmptyComponent={
+            <View style={styles.emptyContainer}>
+              <Ionicons name="restaurant-outline" size={64} color="#ccc" />
+              <Text>No hay productos en esta categoría</Text>
+            </View>
+          }
+          renderItem={({ item }) => (
+            <TouchableOpacity style={styles.card}>
+              <Image source={{ uri: item.Icono }} style={styles.image} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.name}>{item.Titulo}</Text>
+                <Text style={styles.desc}>{item.Descripcion}</Text>
+                <Text style={styles.price}>S/ {item.Precio}</Text>
+              </View>
+              <TouchableOpacity style={styles.addButton} onPress={() => goToInfoMenu(item)}>
+                <Ionicons name="add" size={22} color="#fff" />
+              </TouchableOpacity>
+            </TouchableOpacity>
+          )}
+        />
+
+{/* Botón flotante de carrito con badge doble */}
+<TouchableOpacity style={styles.floatingCartButton}>
+  <View style={styles.cartIconContainer}>
+    <Ionicons name="cart" size={28} color="#fff" />
+    <View style={styles.cartBadge}>
+      <Text style={styles.cartBadgeText}>{cartCount}</Text>
     </View>
+  </View>
+</TouchableOpacity>
+
+
+      </View>
+    </SafeAreaView>
   );
 }
-
-// Estilos
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  header: { backgroundColor: '#ff6600', padding: 15 },
-  title: { fontSize: 20, fontWeight: 'bold', color: '#fff', marginBottom: 8 },
-  search: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    paddingHorizontal: 10,
-    height: 40,
-  },
-  tabs: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#fff7e6',
-    paddingVertical: 10,
-  },
-  tab: { paddingVertical: 6, paddingHorizontal: 15, borderRadius: 20 },
-  activeTab: { backgroundColor: '#ff6600' },
-  tabText: { color: '#333', fontWeight: '500' },
-  activeTabText: { color: '#fff' },
-  list: { padding: 10 },
-  card: {
-    flexDirection: 'row',
-    backgroundColor: '#fff7e6',
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-    alignItems: 'center',
-  },
-  image: { width: 80, height: 80, borderRadius: 10, marginRight: 10 },
-  name: { fontSize: 16, fontWeight: 'bold', color: '#333' },
-  desc: { fontSize: 13, color: '#666', marginVertical: 2 },
-  priceRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  price: { fontSize: 15, color: '#ff6600', fontWeight: 'bold' },
-  oldPrice: { fontSize: 13, color: '#999', textDecorationLine: 'line-through' },
-  tag: {
-    fontSize: 12,
-    color: '#fff',
-    backgroundColor: '#ff6600',
-    paddingHorizontal: 6,
-    borderRadius: 5,
-  },
-  addButton: {
-    backgroundColor: '#ff6600',
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 5,
-  },
-});
