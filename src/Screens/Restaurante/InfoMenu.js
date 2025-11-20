@@ -35,6 +35,8 @@ export function InfoMenu() {
           <Text style={styles.title}>{producto.Titulo}</Text>
           <Text style={styles.price}>S/ {producto.Precio}</Text>
           {producto.Peso && <Text style={styles.weight}>Peso: {producto.Peso}</Text>}
+          <Text style={{ fontWeight: 'bold', marginTop: 5, color: '#000' }}>Descripcion</Text>
+
           <Text style={styles.description}>{producto.Descripcion}</Text>
 
           <View style={styles.buttonsContainer}>

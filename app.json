@@ -20,19 +20,27 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.recc14.AppRestaurante"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-     "plugins": [
+    "plugins": [
       [
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ]
-    ]
-
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0ecd500b-93d3-4caf-9801-725ac04de96d"
+      }
+    }
   }
 }

@@ -8,13 +8,12 @@ import { screen } from "../../utils";
 
 export function MenuListScreen(props) {
   const { navigation } = props;
+  const [cartItems, setCartItems] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
   const [search, setSearch] = useState('');
   const [productos, setProductos] = useState([]);
   const [categorias, setCategorias] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todas');
-
-  // Estado del carrito (solo visual por ahora)
-  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     const db = getDatabase();
@@ -49,25 +48,34 @@ export function MenuListScreen(props) {
     });
   }, []);
 
-const goToInfoMenu = (producto) => {
-  navigation.navigate(screen.menulist.info, {
-    producto,
-    onAddToCart: (cantidad) => {
-      setCartCount(prev => prev + cantidad); // suma la cantidad seleccionada
-    },
-  });
-};
+  const goToInfoMenu = (producto) => {
+    navigation.navigate(screen.menulist.info, {
+      producto,
+      onAddToCart: (cantidad) => {
+        setCartItems(prev => [...prev, { ...producto, cantidad }]);
+        setCartCount(prev => prev + cantidad);
+      },
+    });
+  };
 
+  const goToShop = () => {
+    navigation.navigate(screen.shopmenu.tab, {
+      cartItems,
+      onUpdateCart: (newCart) => {
+        setCartItems(newCart);
+        const newCount = newCart.reduce((sum, item) => sum + (item.cantidad || 1), 0);
+        setCartCount(newCount);
+      },
+    });
+  };
 
   const filteredData = productos.filter(item => {
     const titulo = (item?.Titulo || "").toLowerCase();
     const desc = (item?.Descripcion || "").toLowerCase();
     const query = (search || "").toLowerCase();
-
     const matchSearch = titulo.includes(query) || desc.includes(query);
 
     if (categoriaSeleccionada === 'todas') return matchSearch;
-
     const itemCat = item?.categoriaId !== undefined ? String(item.categoriaId) : undefined;
     return matchSearch && itemCat === String(categoriaSeleccionada);
   });
@@ -142,16 +150,15 @@ const goToInfoMenu = (producto) => {
           )}
         />
 
-{/* Botón flotante de carrito con badge doble */}
-<TouchableOpacity style={styles.floatingCartButton}>
-  <View style={styles.cartIconContainer}>
-    <Ionicons name="cart" size={28} color="#fff" />
-    <View style={styles.cartBadge}>
-      <Text style={styles.cartBadgeText}>{cartCount}</Text>
-    </View>
-  </View>
-</TouchableOpacity>
-
+        {/* Botón flotante de carrito */}
+        <TouchableOpacity style={styles.floatingCartButton} onPress={goToShop}>
+          <View style={styles.cartIconContainer}>
+            <Ionicons name="cart" size={28} color="#fff" />
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{cartCount}</Text>
+            </View>
+          </View>
+        </TouchableOpacity>
 
       </View>
     </SafeAreaView>

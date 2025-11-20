@@ -19,16 +19,25 @@ const AccountStack = {
   forgotPassword: "ForgotPassword",
 };
 
-const MenuListStack = {
+const MenuListRoutes  = {
   tab: "MenuListTab",
   list: "MenuTab",
   info:"MenuInfo"
 };
 
+const ShopMenuStack={
+  tab:"ShopTap",
+}
+
+const PaymentStack={
+  list:"MetodoPago",
+}
 
 export const screen = {
   restaurant: RestaurantStack,
   favorites: FavoriteStack,
   account: AccountStack,
-  menulist: MenuListStack,
+  menulist: MenuListRoutes,
+  shopmenu: ShopMenuStack,
+  payment:PaymentStack,
 };
