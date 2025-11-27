@@ -6,14 +6,15 @@ import {map} from "lodash";
 import {Modal }from "../../components/Shared";
 import {ChangeDisplayNameForm} from "./ChangeDisplayNameForm";
 import {ChangeEmailForm} from "./ChangeEmailForm";
-import {ChangePasswordForm} from "./ChangePasswordForm"
+import {ChangePasswordForm} from "./ChangePasswordForm";
+import {screen} from "../../utils"
 //
 
 
 
 export function AccountOptions(props) {
 
-  const {onReload}= props;
+  const {onReload, navigation}= props;
 
   const [showModal, setShowModal] = useState(false);
   const [renderComponent, setRenderComponent] = useState(null);
@@ -23,14 +24,20 @@ export function AccountOptions(props) {
   const selectedComponent = (key) => {
     if (key === "displayName") {
       setRenderComponent(<ChangeDisplayNameForm onClose={onCloseOpenModal} onReload={onReload}/>);
+      onCloseOpenModal();
     }
     if (key === "Email") {
       setRenderComponent(<ChangeEmailForm onClose={onCloseOpenModal} onReload={onReload}/>);
+      onCloseOpenModal();
     }
     if (key === "password") {
       setRenderComponent(<ChangePasswordForm onClose={onCloseOpenModal} />);
+      onCloseOpenModal();
     }
-    onCloseOpenModal();
+    if(key ==="historial"){
+        navigation.navigate(screen.account.history)
+    }
+    
   };
 
   const menuOptions = getMenuOptions(selectedComponent);
@@ -95,5 +102,15 @@ function getMenuOptions(selectedComponent) {
       iconColorRight: "#ccc",
       onPress: () => selectedComponent("password"),
     },
+    
+    {
+      title: "Historial de compras",
+      iconNameLeft: "receipt-outline",
+      iconColorLeft: "#ec7f26",
+      iconNameRight: "chevron-forward-outline",
+      iconColorRight: "#ccc",
+      onPress:() => selectedComponent("historial"),
+    }
+
   ];
 }

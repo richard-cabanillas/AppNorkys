@@ -34,26 +34,26 @@ export function ChangePasswordForm(props) {
         const auth = getAuth();
         const currentUser = auth.currentUser;
 
-        // 1️⃣ Reautenticación con la contraseña actual
+        // Reautenticación con la contraseña actual
         const credentials = EmailAuthProvider.credential(
           currentUser.email,
           formValue.password
         );
         await reauthenticateWithCredential(currentUser, credentials);
 
-        // 2️⃣ Actualización de contraseña en Firebase
+        //Actualización de contraseña en Firebase
         await updatePassword(currentUser, formValue.confirmNewPassword);
 
-        // 3️⃣ Obtener el nuevo token actualizado
+        //Obtener el nuevo token actualizado
         const token = await currentUser.getIdToken(true); // true fuerza renovación
 
-        // 4️⃣ Guardar token de forma segura para futuras sesiones o biometría
+        // Guardar token de forma segura para futuras sesiones o biometría
         await SecureStore.setItemAsync('firebaseToken', token);
 
-        // 5️⃣ Cerrar formulario (por ejemplo, cerrar modal)
+        //Cerrar formulario (por ejemplo, cerrar modal)
         onClose();
 
-        // 6️⃣ Mensaje opcional de éxito
+        //Mensaje opcional de éxito
         Toast.show({
           type: 'success',
           position: 'bottom',

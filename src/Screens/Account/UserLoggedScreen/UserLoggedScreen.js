@@ -5,12 +5,14 @@ import {styles} from "./UserLoggedScreen.style"
 import {Button} from "react-native-elements";
 import {getAuth, signOut} from "firebase/auth";
 import {LoadingModal} from "../../../components";
+import { useNavigation } from '@react-navigation/native'; // ← AÑADE ESTO
+
 
 // import { useState } from 'react'
 
 
 export  function UserLoggedScreen() {
-
+  const navigation = useNavigation();
   const[loading, setLoading]=useState(false);
   const[loadingText,setLoadingText]= useState("");
   const [_ ,setReload]= useState(false);
@@ -26,7 +28,7 @@ export  function UserLoggedScreen() {
         
         <InfoUser setLoading={setLoading} setLoadingText={setLoadingText}/>
 
-        <AccountOptions onReload={onReload}/>
+        <AccountOptions onReload={onReload} navigation={navigation}/>
 
         <Button title="Cerrar sesion" 
         buttonStyle={styles.btnStyles} 

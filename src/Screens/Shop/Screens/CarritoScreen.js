@@ -37,8 +37,9 @@ export function CarritoScreen({ route, navigation }) {
     const item = newCart[index];
     const newQty = (item.cantidad || 1) + delta;
 
+    // elimina si llega a 0
     if (newQty < 1) {
-      removeItem(index); // elimina si llega a 0
+      removeItem(index); 
       return;
     }
 
@@ -47,11 +48,7 @@ export function CarritoScreen({ route, navigation }) {
     if (onUpdateCart) onUpdateCart(newCart);
   };
 
-  // Función para pagar
-  const handlePagar = () => {
-    // Aquí puedes poner la lógica de pago o navegar a otra pantalla
-    alert('Funcionalidad de pago aún no implementada');
-  };
+
 
 
   const gotPayment = ()=> {

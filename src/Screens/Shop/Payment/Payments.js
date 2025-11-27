@@ -5,6 +5,8 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import Constants from 'expo-constants';
+import {styles} from "./Payments.styles";
+import { useNavigation } from '@react-navigation/native';
 
 // Configurar el handler de notificaciones
 Notifications.setNotificationHandler({
@@ -94,6 +96,8 @@ async function registerForPushNotificationsAsync() {
 }
 
 export function Payments() {
+    const navigation = useNavigation();
+
   const [showCVV, setShowCVV] = useState(false);
   const [cvv, setCvv] = useState('');
   const [expoPushToken, setExpoPushToken] = useState('');
@@ -119,13 +123,8 @@ export function Payments() {
     });
 
     return () => {
-      if (notificationListener.current) {
-        Notifications.removeNotificationSubscription(notificationListener.current);
-      }
-      if (responseListener.current) {
-        Notifications.removeNotificationSubscription(responseListener.current);
-      }
-    };
+         notificationListener.current?.remove();
+    responseListener.current?.remove();   };
   }, []);
 
   const handleCvvChange = (text) => {
@@ -176,10 +175,29 @@ export function Payments() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+<TouchableOpacity
+  onPress={() => navigation.goBack()}
+  style={{
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 15
+  }}
+>
+  <Ionicons name="arrow-back" size={28} color="#333" />
+
+  <Text
+    style={{
+      fontSize: 24,
+      fontWeight: "600",
+      marginLeft: 10 
+    }}
+  >
+    Información de Pago
+  </Text>
+</TouchableOpacity>
+
       <ScrollView contentContainerStyle={{ padding: 20 }}>
-        <Text style={{ fontSize: 24, fontWeight: '600', marginBottom: 20 }}>
-          Información de Pago
-        </Text>
+
 
         {/* Mostrar Push Token (solo para debug, quitar en producción) */}
         {__DEV__ && expoPushToken && (
@@ -260,23 +278,3 @@ export function Payments() {
   );
 }
 
-const styles = {
-  label: { fontSize: 16, fontWeight: '500', marginBottom: 5, marginTop: 15 },
-  input: { backgroundColor: '#f3f3f3', padding: 15, borderRadius: 10, fontSize: 16 },
-  inputIconContainer: {
-    backgroundColor: '#f3f3f3',
-    padding: 15,
-    borderRadius: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  inputIconText: { fontSize: 16, flex: 1 },
-  payButton: { 
-    backgroundColor: '#0a84ff', 
-    padding: 18, 
-    borderRadius: 12, 
-    marginTop: 40, 
-    alignItems: 'center' 
-  },
-};

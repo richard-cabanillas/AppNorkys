@@ -4,6 +4,8 @@ import{screen} from "../utils";
 import{LoginScreen} from "../Screens/Account/LoginScreen/LoginScreen";
 import{RegisterScreen} from "../Screens/Account/RegisterScreen/RegisterScreen";
 import{ForgotPassword} from "../Screens/Account/ForgotPassword/ForgotPassword";
+import {ChangeHistory} from "../components/Account";
+import {ChangeInfoPedido} from "../components/Account";
 
 
 const Stack = createNativeStackNavigator();
@@ -24,7 +26,11 @@ export function AccountStack(){
             <Stack.Screen name={screen.account.forgotPassword} component={ForgotPassword} 
             options={{title:"Recuperar contraseña"}}/>
 
+            <Stack.Screen name={screen.account.history} component={ChangeHistory}
+             options={{title:"Historial de compras"}}/>
 
+            <Stack.Screen name={screen.account.pedido} component={ChangeInfoPedido} options={{title:"Info del pedido"}}/>
+        
         </Stack.Navigator>
         
     )

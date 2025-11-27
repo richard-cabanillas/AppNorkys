@@ -17,6 +17,8 @@ const AccountStack = {
   login: "Login",
   register: "Register",
   forgotPassword: "ForgotPassword",
+  history:"History",
+  pedido:"InfoPedido",
 };
 
 const MenuListRoutes  = {
