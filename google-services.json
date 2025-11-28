@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "250778964247",
+    "firebase_url": "https://restaurante-norky-default-rtdb.firebaseio.com",
+    "project_id": "restaurante-norky",
+    "storage_bucket": "restaurante-norky.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:250778964247:android:ecb17e41074c72ea42e752",
+        "android_client_info": {
+          "package_name": "com.app.rokys"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "250778964247-3ujikebf9k6mg9qr2p8jvdvb95q5hgmn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFJQ0fjTgoFgerrgIIkjBzy2otAmOTViA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "250778964247-3ujikebf9k6mg9qr2p8jvdvb95q5hgmn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
