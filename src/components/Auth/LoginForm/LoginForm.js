@@ -6,9 +6,10 @@ import{useNavigation} from "@react-navigation/native";
 import{screen} from "../../../utils"
 import { useState } from 'react';
 import {useFormik} from "formik";
-import {getAuth,signInWithEmailAndPassword} from "firebase/auth";
+import {signInWithEmailAndPassword} from "firebase/auth";
 import Toast from "react-native-toast-message";
 import { initialValues, validationSchema } from "./LoginForm.data";
+import {auth} from "../../../utils"
 // import { initialValues,validationSchema } from '../RegisterFomr/RegisterForm.data';
 
 export function LoginForm() {
@@ -17,13 +18,13 @@ export function LoginForm() {
     const [showPassword, setShowPassword] = useState(false)
     const showHidenPassword =() => setShowPassword((prevState) =>!prevState);
 
-    const formik=useFormik({
+        const formik=useFormik({
         initialValues:initialValues(),
         validationSchema:validationSchema(),
         validateOnChange:false,
         onSubmit:async (formValue) =>{
         try {
-                const auth = getAuth();
+                // ← CAMBIO: Usa auth importado directamente
                 await signInWithEmailAndPassword(
                     auth,
                     formValue.email,
@@ -33,10 +34,8 @@ export function LoginForm() {
                 navigation.navigate(screen.account.list)
 
             } catch (error) {
-                // Imprimir el error en consola para debugging (opcional)
                 console.error("Login Error:", error);
 
-                // Mensajes más específicos según el código de error de Firebase
                 const code = error.code;
                 let message = "Usuario o contraseña incorrectos";
                 if (code === 'auth/wrong-password') message = 'Contraseña incorrecta';

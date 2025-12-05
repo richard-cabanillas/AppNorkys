@@ -1,8 +1,9 @@
+
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-// ✅ Importar el SDK nativo
+import { ref, onValue } from "firebase/database";
 import { database } from '../../utils';
 import { styles } from './MenuListScreen.styles';
 import { screen } from "../../utils";
@@ -19,7 +20,6 @@ export function MenuListScreen(props) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Validar que database esté inicializado
     if (!database) {
       console.error("❌ Database no inicializado");
       setError("Error de conexión");
@@ -27,19 +27,16 @@ export function MenuListScreen(props) {
       return;
     }
 
-    console.log("🔄 Conectando a Firebase con SDK Nativo...");
-    
-    let categoriasRef;
-    let productosRef;
+    console.log("🔄 Conectando a Firebase...");
 
     try {
-      // ✅ Referencias con SDK nativo
-      categoriasRef = database.ref('Categorias');
-      productosRef = database.ref('Productos');
+      // Referencias con SDK Web
+      const categoriasRef = ref(database, 'Categorias');
+      const productosRef = ref(database, 'Productos');
 
-      // ✅ Listener de Categorías con SDK nativo
-      const categoriasListener = categoriasRef.on(
-        'value',
+      // Listener de Categorías
+      const unsubscribeCategorias = onValue(
+        categoriasRef,
         (snapshot) => {
           try {
             console.log("✅ Categorias recibidas");
@@ -60,14 +57,14 @@ export function MenuListScreen(props) {
           }
         },
         (err) => {
-          console.error("❌ Error Firebase Categorias:", err.message);
+          console.error("❌ Error Firebase Categorias:", err);
           setError("Error al cargar categorías");
         }
       );
 
-      // ✅ Listener de Productos con SDK nativo
-      const productosListener = productosRef.on(
-        'value',
+      // Listener de Productos
+      const unsubscribeProductos = onValue(
+        productosRef,
         (snapshot) => {
           try {
             console.log("✅ Productos recibidos");
@@ -99,33 +96,26 @@ export function MenuListScreen(props) {
           }
         },
         (err) => {
-          console.error("❌ Error Firebase Productos:", err.message);
+          console.error("❌ Error Firebase Productos:", err);
           setError("Error al cargar productos");
           setLoading(false);
         }
       );
+
+      // Cleanup
+      return () => {
+        unsubscribeCategorias();
+        unsubscribeProductos();
+        console.log("🧹 Listeners limpiados");
+      };
 
     } catch (err) {
       console.error("❌ Error en useEffect:", err);
       setError("Error de inicialización");
       setLoading(false);
     }
-
-    // ✅ Cleanup con SDK nativo
-    return () => {
-      try {
-        if (categoriasRef) {
-          categoriasRef.off('value');
-        }
-        if (productosRef) {
-          productosRef.off('value');
-        }
-        console.log("🧹 Listeners limpiados");
-      } catch (err) {
-        console.error("Error en cleanup:", err);
-      }
-    };
   }, []);
+
 
   const goToInfoMenu = (producto) => {
     try {

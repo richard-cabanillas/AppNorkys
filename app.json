@@ -25,7 +25,6 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.app.rokys",
-      "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyD0vXplpYI1GnZqJ9qmY3Ts4bR05FL_XPc"
@@ -42,15 +41,6 @@
         "expo-image-picker",
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
-        }
-      ],
-      "@react-native-firebase/app",
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "googleServicesFile": "./google-services.json"
-          }
         }
       ]
     ],

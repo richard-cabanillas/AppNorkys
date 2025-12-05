@@ -6,10 +6,11 @@ import{styles} from "./RegisterForm.style";
 import {useFormik} from "formik";
 import {initialValues,validationSchema} from "./RegisterForm.data";
 import { useState } from 'react';
-import {getAuth,createUserWithEmailAndPassword} from "firebase/auth";
+import {createUserWithEmailAndPassword} from "firebase/auth";
 import { useNavigation } from '@react-navigation/native';
-import Toast from "react-native-toast-message"
+import Toast from "react-native-toast-message";
 import{screen} from "../../../utils";
+import {auth} from "../../../utils";
 
 
 export  function RegisterForm() {
@@ -19,14 +20,14 @@ export  function RegisterForm() {
 
   const navigation =useNavigation();
 
-  const formik = useFormik({
+    const formik = useFormik({
     initialValues: initialValues(),
     validationSchema: validationSchema(),
     validateOnChange:false,
     onSubmit:async (formValue) =>{
 
       try {
-          const auth = getAuth();
+          // ← CAMBIO: Usa auth importado directamente
           await createUserWithEmailAndPassword(
             auth,
             formValue.email,
@@ -35,9 +36,8 @@ export  function RegisterForm() {
 
           navigation.navigate(screen.account.list);
       } catch (error) {
-        console.error("Error al registrar:", error); // Verás el mensaje en la consola
+        console.error("Error al registrar:", error);
         
-        // Mensajes más legibles según código de error de Firebase
         const code = error.code;
         let message = 'Error al registrarse';
         if (code === 'auth/email-already-in-use') message = 'El correo ya está en uso';
