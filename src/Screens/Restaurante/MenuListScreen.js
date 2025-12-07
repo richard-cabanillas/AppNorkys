@@ -1,10 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ref, onValue } from "firebase/database";
-import { database } from '../../utils';
+import { database } from '../../utils/firebase'; // ← Verifica esta ruta
 import { styles } from './MenuListScreen.styles';
 import { screen } from "../../utils";
 
@@ -20,189 +18,132 @@ export function MenuListScreen(props) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!database) {
-      console.error("❌ Database no inicializado");
-      setError("Error de conexión");
-      setLoading(false);
-      return;
-    }
+    console.log("🔄 Conectando a Firebase Database...");
 
-    console.log("🔄 Conectando a Firebase...");
+    let isMounted = true;
 
     try {
-      // Referencias con SDK Web
-      const categoriasRef = ref(database, 'Categorias');
-      const productosRef = ref(database, 'Productos');
+      // ✅ CORRECTO: Usa database() con paréntesis
+      const categoriasRef = database().ref('Categorias');
+      const productosRef = database().ref('Productos');
 
-      // Listener de Categorías
-      const unsubscribeCategorias = onValue(
-        categoriasRef,
+      const categoriasListener = categoriasRef.on(
+        'value',
         (snapshot) => {
-          try {
-            console.log("✅ Categorias recibidas");
-            const data = snapshot.val();
-            if (data) {
-              const lista = Object.keys(data).map(key => ({
-                id: String(key),
-                nombre: data[key].nombre || String(data[key].Nombre || data[key].title || key)
-              }));
-              console.log(`✅ ${lista.length} categorías cargadas`);
-              setCategorias(lista);
-            } else {
-              console.log("⚠️ No hay categorías");
-              setCategorias([]);
-            }
-          } catch (err) {
-            console.error("❌ Error procesando categorías:", err);
+          if (!isMounted) return;
+          
+          const data = snapshot.val();
+          if (data) {
+            const lista = Object.keys(data).map(key => ({
+              id: String(key),
+              nombre: data[key].nombre || String(data[key].Nombre || key)
+            }));
+            console.log(`✅ ${lista.length} categorías cargadas`);
+            setCategorias(lista);
           }
         },
         (err) => {
-          console.error("❌ Error Firebase Categorias:", err);
+          if (!isMounted) return;
+          console.error("❌ Error Categorias:", err);
           setError("Error al cargar categorías");
         }
       );
 
-      // Listener de Productos
-      const unsubscribeProductos = onValue(
-        productosRef,
+      const productosListener = productosRef.on(
+        'value',
         (snapshot) => {
-          try {
-            console.log("✅ Productos recibidos");
-            const data = snapshot.val();
-            if (data) {
-              const lista = Object.keys(data).map(key => {
-                const raw = data[key] || {};
-                const rawCat = raw.categoriaId ?? raw.categoriaID ?? raw.CategoriaId ?? 
-                             raw.Categoria ?? raw.categoria ?? raw.cat ?? 
-                             raw.categoryId ?? raw.category;
-                return {
-                  id: String(key),
-                  ...raw,
-                  categoriaId: rawCat !== undefined ? String(rawCat) : undefined
-                };
-              });
-              console.log(`✅ ${lista.length} productos cargados`);
-              setProductos(lista);
-              setError(null);
-            } else {
-              console.log("⚠️ No hay productos");
-              setProductos([]);
-            }
-            setLoading(false);
-          } catch (err) {
-            console.error("❌ Error procesando productos:", err);
-            setError("Error al procesar datos");
-            setLoading(false);
+          if (!isMounted) return;
+          
+          const data = snapshot.val();
+          if (data) {
+            const lista = Object.keys(data).map(key => ({
+              id: String(key),
+              ...data[key],
+              categoriaId: data[key].categoriaId || data[key].Categoria
+            }));
+            console.log(`✅ ${lista.length} productos cargados`);
+            setProductos(lista);
           }
+          setLoading(false);
         },
         (err) => {
-          console.error("❌ Error Firebase Productos:", err);
+          if (!isMounted) return;
+          console.error("❌ Error Productos:", err);
           setError("Error al cargar productos");
           setLoading(false);
         }
       );
 
-      // Cleanup
       return () => {
-        unsubscribeCategorias();
-        unsubscribeProductos();
-        console.log("🧹 Listeners limpiados");
+        isMounted = false;
+        try {
+          categoriasRef.off('value', categoriasListener);
+          productosRef.off('value', productosListener);
+          console.log("✅ Listeners limpiados sin errores");
+        } catch (err) {
+          console.log("⚠️ Error en cleanup:", err.message);
+        }
       };
 
     } catch (err) {
-      console.error("❌ Error en useEffect:", err);
+      console.error("❌ Error:", err);
       setError("Error de inicialización");
       setLoading(false);
     }
   }, []);
 
-
   const goToInfoMenu = (producto) => {
-    try {
-      navigation.navigate(screen.menulist.info, {
-        producto,
-        onAddToCart: (cantidad) => {
-          setCartItems(prev => [...prev, { ...producto, cantidad }]);
-          setCartCount(prev => prev + cantidad);
-        },
-      });
-    } catch (err) {
-      console.error("Error navegando a info:", err);
-    }
+    navigation.navigate(screen.menulist.info, {
+      producto,
+      onAddToCart: (cantidad) => {
+        setCartItems(prev => [...prev, { ...producto, cantidad }]);
+        setCartCount(prev => prev + cantidad);
+      },
+    });
   };
 
   const goToShop = () => {
-    try {
-      navigation.navigate(screen.shopmenu.tab, {
-        cartItems,
-        onUpdateCart: (newCart) => {
-          setCartItems(newCart);
-          const newCount = newCart.reduce((sum, item) => sum + (item.cantidad || 1), 0);
-          setCartCount(newCount);
-        },
-      });
-    } catch (err) {
-      console.error("Error navegando a shop:", err);
-    }
+    navigation.navigate(screen.shopmenu.tab, {
+      cartItems,
+      onUpdateCart: (newCart) => {
+        setCartItems(newCart);
+        setCartCount(newCart.reduce((sum, item) => sum + (item.cantidad || 1), 0));
+      },
+    });
   };
 
   const filteredData = productos.filter(item => {
-    try {
-      const titulo = (item?.Titulo || "").toLowerCase();
-      const desc = (item?.Descripcion || "").toLowerCase();
-      const query = (search || "").toLowerCase();
-      const matchSearch = titulo.includes(query) || desc.includes(query);
+    const titulo = (item?.Titulo || "").toLowerCase();
+    const query = search.toLowerCase();
+    const matchSearch = titulo.includes(query);
 
-      if (categoriaSeleccionada === 'todas') return matchSearch;
-      const itemCat = item?.categoriaId !== undefined ? String(item.categoriaId) : undefined;
-      return matchSearch && itemCat === String(categoriaSeleccionada);
-    } catch (err) {
-      console.error("Error filtrando producto:", err);
-      return false;
-    }
+    if (categoriaSeleccionada === 'todas') return matchSearch;
+    return matchSearch && String(item?.categoriaId) === String(categoriaSeleccionada);
   });
 
-  // Pantalla de error
   if (error) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Ionicons name="warning-outline" size={64} color="#ff6b6b" />
-          <Text style={{ fontSize: 18, color: '#333', marginTop: 16, textAlign: 'center', fontWeight: '600' }}>
-            {error}
-          </Text>
-          <Text style={{ fontSize: 14, color: '#666', marginTop: 8, textAlign: 'center' }}>
-            Verifica tu conexión a internet
-          </Text>
+          <Text style={{ fontSize: 18, marginTop: 16 }}>{error}</Text>
           <TouchableOpacity
-            style={{ 
-              marginTop: 20, 
-              backgroundColor: '#ff6b35', 
-              paddingHorizontal: 24, 
-              paddingVertical: 12, 
-              borderRadius: 8 
-            }}
-            onPress={() => {
-              setError(null);
-              setLoading(true);
-            }}
+            style={{ marginTop: 20, backgroundColor: '#ff6b35', padding: 12, borderRadius: 8 }}
+            onPress={() => { setError(null); setLoading(true); }}
           >
-            <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>Reintentar</Text>
+            <Text style={{ color: '#fff' }}>Reintentar</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
   }
 
-  // Pantalla de carga
   if (loading) {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" color="#ff6b35" />
-          <Text style={{ fontSize: 18, color: '#333', marginTop: 16 }}>
-            Cargando menú...
-          </Text>
+          <Text style={{ marginTop: 16 }}>Cargando menú...</Text>
         </View>
       </SafeAreaView>
     );
@@ -211,8 +152,6 @@ export function MenuListScreen(props) {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
       <View style={styles.container}>
-
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Menú</Text>
           <TextInput
@@ -223,13 +162,7 @@ export function MenuListScreen(props) {
           />
         </View>
 
-        {/* Categorías */}
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.categoriesBar}
-          contentContainerStyle={styles.categoriesContent}
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesBar}>
           <TouchableOpacity
             style={[styles.categoryButton, categoriaSeleccionada === 'todas' && styles.categoryButtonActive]}
             onPress={() => setCategoriaSeleccionada('todas')}
@@ -239,44 +172,29 @@ export function MenuListScreen(props) {
             </Text>
           </TouchableOpacity>
 
-          {categorias.map(categoria => (
+          {categorias.map(cat => (
             <TouchableOpacity
-              key={categoria.id}
-              style={[styles.categoryButton, categoriaSeleccionada === categoria.id && styles.categoryButtonActive]}
-              onPress={() => setCategoriaSeleccionada(categoria.id)}
+              key={cat.id}
+              style={[styles.categoryButton, categoriaSeleccionada === cat.id && styles.categoryButtonActive]}
+              onPress={() => setCategoriaSeleccionada(cat.id)}
             >
-              <Text style={[styles.categoryText, categoriaSeleccionada === categoria.id && styles.categoryTextActive]}>
-                {categoria.nombre}
+              <Text style={[styles.categoryText, categoriaSeleccionada === cat.id && styles.categoryTextActive]}>
+                {cat.nombre}
               </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
 
-        {/* Productos filtrados */}
         <FlatList
           data={filteredData}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.list}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Ionicons name="restaurant-outline" size={64} color="#ccc" />
-              <Text style={{ color: '#666', marginTop: 12 }}>
-                No hay productos en esta categoría
-              </Text>
-            </View>
-          }
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.card}>
-              <Image 
-                source={{ uri: item.Icono }} 
-                style={styles.image}
-                onError={(e) => console.log("Error imagen:", item.Titulo)}
-              />
+              <Image source={{ uri: item.Icono }} style={styles.image} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.name}>{item.Titulo}</Text>
-                <Text style={styles.desc} numberOfLines={2}>
-                  {item.Descripcion}
-                </Text>
+                <Text style={styles.desc} numberOfLines={2}>{item.Descripcion}</Text>
                 <Text style={styles.price}>S/ {item.Precio}</Text>
               </View>
               <TouchableOpacity style={styles.addButton} onPress={() => goToInfoMenu(item)}>
@@ -286,18 +204,14 @@ export function MenuListScreen(props) {
           )}
         />
 
-        {/* Botón flotante de carrito */}
         {cartCount > 0 && (
           <TouchableOpacity style={styles.floatingCartButton} onPress={goToShop}>
-            <View style={styles.cartIconContainer}>
-              <Ionicons name="cart" size={28} color="#fff" />
-              <View style={styles.cartBadge}>
-                <Text style={styles.cartBadgeText}>{cartCount}</Text>
-              </View>
+            <Ionicons name="cart" size={28} color="#fff" />
+            <View style={styles.cartBadge}>
+              <Text style={styles.cartBadgeText}>{cartCount}</Text>
             </View>
           </TouchableOpacity>
         )}
-
       </View>
     </SafeAreaView>
   );

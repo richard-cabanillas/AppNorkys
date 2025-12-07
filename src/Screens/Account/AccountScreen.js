@@ -1,29 +1,29 @@
-import React,{useState,useEffect} from 'react'
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image  } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
 import Ionicons from "@expo/vector-icons/Ionicons";
-import{getAuth,onAuthStateChanged} from "firebase/auth";
-import {UserGuestScreen} from "./UserGuestScreen/UserGuestScreen";
-import{UserLoggedScreen} from "./UserLoggedScreen/UserLoggedScreen";
-import {LoadingModal} from "../../components"
 
+// IMPORTAR SDK NATIVO
+import auth from '@react-native-firebase/auth';
 
-export  function AccountScreen() {
+import { UserGuestScreen } from "./UserGuestScreen/UserGuestScreen";
+import { UserLoggedScreen } from "./UserLoggedScreen/UserLoggedScreen";
+import { LoadingModal } from "../../components";
 
-  const[hasLogged,setHasLogged] =useState(null)
+export function AccountScreen() {
 
-      useEffect(()=>{
-        const auth = getAuth();
-        onAuthStateChanged(auth,(user)=>{
-          setHasLogged(user ? true: false);
-        });
+  const [hasLogged, setHasLogged] = useState(null);
 
-      }, []);
+  useEffect(() => {
+    const unsubscribe = auth().onAuthStateChanged((user) => {
+      setHasLogged(user ? true : false);
+    });
 
-      if(hasLogged === null){
-        return <LoadingModal  show  text="Cargando"/>
-      }
-  return hasLogged ? <UserLoggedScreen/> : <UserGuestScreen/>;
+    return unsubscribe;
+  }, []);
 
+  if (hasLogged === null) {
+    return <LoadingModal show text="Cargando" />;
+  }
 
-
+  return hasLogged ? <UserLoggedScreen /> : <UserGuestScreen />;
 }

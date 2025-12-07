@@ -15,7 +15,9 @@
     },
 
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.app.rokys",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
 
     "android": {
@@ -25,6 +27,7 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.app.rokys",
+      "googleServicesFile": "./google-services.json",
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyD0vXplpYI1GnZqJ9qmY3Ts4bR05FL_XPc"
@@ -42,7 +45,8 @@
         {
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
-      ]
+      ],
+      "@react-native-firebase/app"
     ],
 
     "extra": {
