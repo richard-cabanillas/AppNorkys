@@ -81,41 +81,6 @@ export  function ChangeEmailForm(props) {
         /> 
 
 
-        {/* <Input 
-        placeholder='Nuevo Email'
-        onChange={(text)=> formik.setFieldValue("email",text)}
-        errorMessage={formik.errors.email}
-        containerStyle={styles.content}
-        rightIcon={
-            <MaterialCommunityIcons
-                name="account-circle-outline"
-                size={24}
-                color="#ec7f26ff"
-                 
-            />
-                }
-        />
-        <Input 
-            placeholder='Contraseña' 
-            containerStyle={styles.content} 
-            secureTextEntry={showPassword ? false :true}
-            rightIcon={
-              <MaterialCommunityIcons
-                name={showPassword ? "eye-off-outline": "eye-outline"} 
-                size={24}
-                color="#ec7f26ff"
-                onPress={onShowPassword}
-                
-              />
-              
-            }
-            onChange={(text)=>formik.setFieldValue("password",text)}
-            errorMessage={formik.errors.password}
-        />
-        <Button title="Cambiar email" containerStyle={styles.btnContainer} buttonStyle={styles.btn} 
-        onPress={formik.handleSubmit}
-        loading={formik.isSubmitting}
-        /> */}
     </View>
   )
 }
