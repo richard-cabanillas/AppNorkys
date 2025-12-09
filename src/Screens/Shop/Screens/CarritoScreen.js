@@ -52,7 +52,10 @@ export function CarritoScreen({ route, navigation }) {
 
 
   const gotPayment = ()=> {
-    navigation.navigate(screen.payment.list)
+    navigation.navigate(screen.payment.list, {
+    cartItems: cartItems,
+    subtotal: subtotal
+  });
 
   }
 

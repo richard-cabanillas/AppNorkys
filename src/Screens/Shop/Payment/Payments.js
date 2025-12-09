@@ -7,7 +7,7 @@ import * as Device from 'expo-device';
 import Constants from 'expo-constants';
 import {styles} from "./Payments.styles";
 import { useNavigation } from '@react-navigation/native';
-
+import { database } from "../../../utils/firebase"; 
 // Configurar el handler de notificaciones
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -95,8 +95,11 @@ async function registerForPushNotificationsAsync() {
   }
 }
 
-export function Payments() {
+export function Payments({ route }) {  // ← CAMBIAR props por { route }
     const navigation = useNavigation();
+    
+    // ← AGREGAR ESTAS LÍNEAS
+    const { cartItems = [], subtotal = 0 } = route.params || {};
 
   const [showCVV, setShowCVV] = useState(false);
   const [cvv, setCvv] = useState('');
@@ -132,10 +135,15 @@ export function Payments() {
     setCvv(cleaned);
   };
 
-  const handlePagar = async () => {
+const handlePagar = async () => {
     // Validación simple
     if (!cvv) {
       Alert.alert('Faltan datos', 'Completa todos los campos');
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      Alert.alert('Carrito vacío', 'No hay productos para procesar');
       return;
     }
 
@@ -147,8 +155,33 @@ export function Payments() {
           body: 'Tu pago está siendo procesado...',
           sound: true,
         },
-        trigger: null, // inmediata
+        trigger: null,
       });
+
+      // Preparar items para Firebase
+      const itemsParaFirebase = {};
+      cartItems.forEach((item, index) => {
+        itemsParaFirebase[`item0${index + 1}`] = {
+          Titulo: item.Titulo || '',
+          cantidad: item.cantidad || 1,
+          precio: item.Precio || 0,
+          productoId: item.id || `p${index + 1}`
+        };
+      });
+
+      // Guardar en Firebase
+      const pedidosRef = database().ref('Pedidos');
+      const nuevoPedidoRef = pedidosRef.push();
+      
+      await nuevoPedidoRef.set({
+        estado: "pendiente",
+        fecha: new Date().toISOString(),
+        id: cartItems.length,
+        items: itemsParaFirebase,
+        total: subtotal
+      });
+
+      console.log('✅ Pedido guardado:', nuevoPedidoRef.key);
 
       // Simular procesamiento de pago
       setTimeout(async () => {
