@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { database } from '../../utils/firebase'; // ← Verifica esta ruta
 import { styles } from './MenuListScreen.styles';
 import { screen } from "../../utils";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function MenuListScreen(props) {
   const { navigation } = props;
@@ -16,6 +17,7 @@ export function MenuListScreen(props) {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todas');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [favoritesIds, setFavoritesIds] = useState([]);
 
   useEffect(() => {
     console.log("🔄 Conectando a Firebase Database...");
@@ -91,6 +93,34 @@ export function MenuListScreen(props) {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    const loadFavorites = async () => {
+      try {
+        const fav = await AsyncStorage.getItem('favorites');
+        const parsed = fav ? JSON.parse(fav) : [];
+        setFavoritesIds(parsed.map(String));
+      } catch (e) {
+        console.log('Error cargando favoritos', e);
+      }
+    };
+    loadFavorites();
+  }, []);
+
+  const toggleFavorite = async (productId) => {
+    try {
+      let updated = [];
+      if (favoritesIds.includes(String(productId))) {
+        updated = favoritesIds.filter(id => id !== String(productId));
+      } else {
+        updated = [...favoritesIds, String(productId)];
+      }
+      setFavoritesIds(updated);
+      await AsyncStorage.setItem('favorites', JSON.stringify(updated));
+    } catch (e) {
+      console.log('Error guardando favoritos', e);
+    }
+  };
 
   const goToInfoMenu = (producto) => {
     navigation.navigate(screen.menulist.info, {
@@ -189,19 +219,40 @@ export function MenuListScreen(props) {
           data={filteredData}
           keyExtractor={item => item.id}
           contentContainerStyle={styles.list}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={styles.card}>
-              <Image source={{ uri: item.Icono }} style={styles.image} />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.name}>{item.Titulo}</Text>
-                <Text style={styles.desc} numberOfLines={2}>{item.Descripcion}</Text>
-                <Text style={styles.price}>S/ {item.Precio}</Text>
-              </View>
-              <TouchableOpacity style={styles.addButton} onPress={() => goToInfoMenu(item)}>
-                <Ionicons name="add" size={22} color="#fff" />
-              </TouchableOpacity>
-            </TouchableOpacity>
-          )}
+          renderItem={({ item }) => {
+              const isFav = favoritesIds.includes(String(item.id));
+              return (
+                <TouchableOpacity style={styles.card}>
+                  <Image source={{ uri: item.Icono }} style={styles.image} />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.name}>{item.Titulo}</Text>
+                    <Text style={styles.desc} numberOfLines={2}>{item.Descripcion}</Text>
+                    <Text style={styles.price}>S/ {item.Precio}</Text>
+                  </View>
+
+                  <TouchableOpacity
+                    onPress={() => toggleFavorite(item.id)}
+                    style={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: 18,
+                      backgroundColor: '#fff',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginLeft: 8,
+                      borderWidth: 1,
+                      borderColor: '#eee'
+                    }}
+                  >
+                    <Ionicons name={isFav ? 'heart' : 'heart-outline'} size={20} color={isFav ? '#ff6b35' : '#999'} />
+                  </TouchableOpacity>
+
+                  <TouchableOpacity style={styles.addButton} onPress={() => goToInfoMenu(item)}>
+                    <Ionicons name="add" size={22} color="#fff" />
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              );
+            }}
         />
 
         {cartCount > 0 && (
