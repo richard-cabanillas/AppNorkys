@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, TextInput, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { database } from '../../utils/firebase'; // ← Verifica esta ruta
+import { database } from '../../utils/firebase';
 import { styles } from './MenuListScreen.styles';
 import { screen } from "../../utils";
 import AsyncStorage from '@react-native-async-storage/async-storage';

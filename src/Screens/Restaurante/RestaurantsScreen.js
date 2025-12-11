@@ -97,7 +97,7 @@ export function RestaurantsScreen(props) {
       subtitle: 'Entero + papas + ensalada',
       price: 'S/ 45.90',
       tag: 'Popular',
-      image: 'https://losmaderos.pe/public/img/products/prd_wc61187987efbb2.jpg',
+      image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhCOPzX_H-IsCStGx3DgwVbhUQnxyFiHalxA&s',
     },
     {
       id: '2',

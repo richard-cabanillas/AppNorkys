@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { styles } from "./InfoMenu.styles";
+import { screen } from "../../utils/screenName";
 
 export function InfoMenu() {
   const route = useRoute();
@@ -17,8 +18,20 @@ export function InfoMenu() {
 
 
     const handleAddToCart = () => {
-    if (onAddToCart) onAddToCart(cantidad); 
-    navigation.goBack();
+    if (onAddToCart) {
+      onAddToCart(cantidad); 
+      navigation.goBack();
+    }
+  };
+
+  const handlePagar = () => {
+    // Crear carrito con el producto actual
+    const cartItems = [{ ...producto, cantidad }];
+    const subtotal = producto.Precio * cantidad;
+    navigation.navigate(screen.payment.list, {
+      cartItems,
+      subtotal
+    });
   };
 
 
@@ -55,7 +68,7 @@ export function InfoMenu() {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity style={styles.payButton}>
+          <TouchableOpacity style={styles.payButton} onPress={handlePagar}>
             <Text style={styles.payButtonText}>Pagar</Text>
           </TouchableOpacity>
         </View>

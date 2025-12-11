@@ -68,7 +68,16 @@ export function FavoriteScreen({ navigation }) {
   const favoritos = productos.filter(p => favoritesIds.includes(String(p.id)));
 
   const goToInfo = (producto) => {
-    navigation.navigate(screen.menulist.info, { producto });
+    navigation.navigate(screen.menulist.info, {
+      producto,
+      onAddToCart: (cantidad) => {
+        // Navegar al carrito con el item agregado desde Favoritos
+        navigation.navigate(screen.shopmenu.tab, {
+          cartItems: [{ ...producto, cantidad }],
+          onUpdateCart: () => {}
+        });
+      }
+    });
   };
 
   const toggleFavorite = async (productId) => {
